@@ -1,0 +1,156 @@
+{% extends 'tracker/base.html' %}
+{% block title %}{{ action }} Weight - Fitrack{% endblock %}
+
+{% block content %}
+<style>
+  /* === Neon Futuristic Weight Form === */
+  body {
+    background: linear-gradient(135deg, #0b132b, #1c2541);
+    color: #e0e0e0;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .form-wrapper {
+    max-width: 550px;
+    margin: 2.5rem auto;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 1.2rem;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+    transition: transform 0.3s ease;
+  }
+
+  .form-wrapper:hover {
+    transform: translateY(-3px);
+  }
+
+  .form-wrapper h2 {
+    text-align: center;
+    color: #00ffc8;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+  }
+
+  label {
+    font-size: 0.9rem;
+    opacity: 0.85;
+  }
+
+  input, textarea, select {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.6rem;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.3s ease, background 0.3s ease;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: #00ffc8;
+    background: rgba(0, 255, 200, 0.12);
+  }
+
+  /* Hide white input arrows */
+  input::-webkit-inner-spin-button,
+  input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  /* Buttons */
+  .btn-primary, .btn-outline {
+    display: inline-block;
+    padding: 0.6rem 1.4rem;
+    border-radius: 0.8rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: linear-gradient(90deg, #00ffc8, #00b4ff);
+    color: #000;
+    border: none;
+    font-weight: 600;
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(90deg, #00b4ff, #00ffc8);
+    transform: scale(1.04);
+    box-shadow: 0 0 10px rgba(0, 255, 200, 0.4);
+  }
+
+  .btn-outline {
+    border: 1px solid #00ffc8;
+    color: #00ffc8;
+    background: transparent;
+  }
+
+  .btn-outline:hover {
+    background: rgba(0, 255, 200, 0.15);
+    color: #00ffc8;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1.2rem;
+  }
+
+  .errorlist {
+    color: #ff7373;
+    font-size: 0.85rem;
+    margin-top: 0.3rem;
+  }
+
+  @media (max-width: 640px) {
+    .form-wrapper {
+      padding: 1.5rem;
+      margin: 1.5rem;
+    }
+  }
+</style>
+
+<div class="form-wrapper">
+  <h2>{{ action }} Weight</h2>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    <div class="space-y-4">
+      <div>
+        <label>Weight (kg)</label>
+        {{ form.weight }}
+        {{ form.weight.errors }}
+      </div>
+      <div>
+        <label>Date</label>
+        <!-- ✅ FIXED: force the input to render as a date picker -->
+        {% if form.date %}
+          <input type="date" name="{{ form.date.name }}" value="{{ form.date.value|default_if_none:'' }}" required id="id_date">
+        {% endif %}
+        {{ form.date.errors }}
+      </div>
+      <div>
+        <label>Notes</label>
+        {{ form.notes }}
+        {{ form.notes.errors }}
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn-primary">{{ action }}</button>
+        <a href="{% url 'tracker:weight_list' %}" class="btn-outline">Cancel</a>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

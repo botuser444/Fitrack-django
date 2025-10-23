@@ -1,0 +1,218 @@
+{% extends 'tracker/base.html' %}
+{% block title %}{{ action }} Workout - Fitrack{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    background: linear-gradient(135deg, #0b132b, #1c2541);
+    color: #e0e0e0;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .form-wrapper {
+    max-width: 650px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 1.2rem;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+    transition: transform 0.3s ease;
+  }
+
+  .form-wrapper:hover {
+    transform: translateY(-3px);
+  }
+
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.2rem;
+  }
+
+  .top-bar h2 {
+    color: #00ffc8;
+    font-weight: 600;
+    font-size: 1.8rem;
+    margin: 0;
+  }
+
+  /* ✅ Add Button */
+  .btn-add {
+    background: linear-gradient(90deg, #00ffc8, #00b4ff);
+    color: #000;
+    padding: 0.6rem 1.4rem;
+    border-radius: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    border: none;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 8px rgba(0, 255, 200, 0.4);
+  }
+
+  .btn-add:hover {
+    background: linear-gradient(90deg, #00b4ff, #00ffc8);
+    transform: scale(1.05);
+    box-shadow: 0 0 12px rgba(0, 255, 200, 0.6);
+  }
+
+  label {
+    font-size: 0.9rem;
+    opacity: 0.85;
+  }
+
+  input, textarea, select {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.6rem;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.3s ease, background 0.3s ease;
+    appearance: none;
+  }
+
+  /* ✅ Dropdown specific styling */
+  select {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    cursor: pointer;
+  }
+
+  select option {
+    background: #1c2541;
+    color: #e0e0e0;
+  }
+
+  select:focus {
+    border-color: #00ffc8;
+    background: rgba(0, 255, 200, 0.12);
+  }
+
+  /* ✅ Transparent arrows in number inputs */
+  input::-webkit-inner-spin-button,
+  input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    opacity: 0;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .btn-primary, .btn-outline {
+    display: inline-block;
+    padding: 0.7rem 1.4rem;
+    border-radius: 0.8rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: linear-gradient(90deg, #00ffc8, #00b4ff);
+    color: #000;
+    border: none;
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(90deg, #00b4ff, #00ffc8);
+    transform: scale(1.04);
+    box-shadow: 0 0 10px rgba(0, 255, 200, 0.4);
+  }
+
+  .btn-outline {
+    border: 1px solid #00ffc8;
+    color: #00ffc8;
+    background: transparent;
+  }
+
+  .btn-outline:hover {
+    background: rgba(0, 255, 200, 0.15);
+    color: #00ffc8;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1.2rem;
+  }
+
+  .errorlist {
+    color: #ff7373;
+    font-size: 0.85rem;
+    margin-top: 0.3rem;
+  }
+
+  textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+</style>
+
+<div class="form-wrapper">
+  <div class="top-bar">
+    <h2>{{ action }} Workout</h2>
+    <a href="{% url 'tracker:workout_add' %}" class="btn-add">ADD</a>
+  </div>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    <div class="space-y-4">
+      {{ form.non_field_errors }}
+
+      <div>
+        <label>Exercise</label>
+        {{ form.exercise_name }}
+        {{ form.exercise_name.errors }}
+      </div>
+
+      <div class="grid-3">
+        <div>
+          <label>Sets</label>
+          {{ form.sets }}
+          {{ form.sets.errors }}
+        </div>
+        <div>
+          <label>Reps</label>
+          {{ form.reps }}
+          {{ form.reps.errors }}
+        </div>
+        <div>
+          <label>Weight (kg)</label>
+          {{ form.weight }}
+          {{ form.weight.errors }}
+        </div>
+      </div>
+
+      <div>
+        <label>Date</label>
+        {{ form.date }}
+        {{ form.date.errors }}
+      </div>
+
+      <div>
+        <label>Notes</label>
+        {{ form.notes }}
+        {{ form.notes.errors }}
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary">SAVE{{ action }}</button>
+        <a href="{% url 'tracker:workout_list' %}" class="btn-outline">Cancel</a>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

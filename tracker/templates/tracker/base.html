@@ -1,0 +1,252 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% block title %}FitTrack{% endblock %}</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #101820;
+      --bg-light: #1c2833;
+      --accent-teal: #00ffc8;
+      --accent-blue: #00b4ff;
+      --accent-orange: #ff8c00;
+      --text-muted: #94a3b8;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--bg-dark), var(--bg-light));
+      color: #f5f6fa;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* -------- HEADER -------- */
+    header.site-nav {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .brand .logo-img {
+      height: 44px;
+      width: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0, 255, 200, 0.3);
+    }
+
+    .brand h1 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--accent-teal);
+      letter-spacing: 0.6px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: #f5f6fa;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+
+    .nav-links a:hover {
+      background: rgba(0, 255, 200, 0.12);
+      color: var(--accent-teal);
+      transform: translateY(-2px);
+    }
+
+    .hamburger {
+      display: none;
+      background: transparent;
+      border: none;
+      color: #fff;
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* -------- MAIN CONTENT -------- */
+    main.container {
+      flex: 1;
+      width: 100%;
+      padding: 2rem 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .messages {
+      margin-bottom: 1rem;
+      width: 100%;
+    }
+
+    .msg {
+      padding: 0.8rem 1rem;
+      border-radius: 12px;
+      margin-bottom: 0.6rem;
+      font-weight: 500;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+    }
+
+    .msg.success {
+      background: rgba(0, 255, 200, 0.1);
+      border-left: 4px solid var(--accent-teal);
+    }
+
+    .msg.error {
+      background: rgba(255, 80, 80, 0.1);
+      border-left: 4px solid #ff5050;
+    }
+
+    .msg.info {
+      background: rgba(0, 180, 255, 0.1);
+      border-left: 4px solid var(--accent-blue);
+    }
+
+    /* -------- FOOTER -------- */
+    footer {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 2rem 1rem;
+      text-align: center;
+      color: var(--text-muted);
+      box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.4);
+      width: 100%;
+    }
+
+    footer .foot-strong {
+      color: var(--accent-teal);
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      display: block;
+    }
+
+    footer p {
+      margin: 0.25rem 0;
+      font-size: 0.95rem;
+    }
+
+    /* -------- RESPONSIVE NAV -------- */
+    @media (max-width: 900px) {
+      .nav-links {
+        display: none;
+      }
+      .hamburger {
+        display: flex;
+      }
+      main.container {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+  <!-- -------- HEADER -------- -->
+  <header class="site-nav" role="banner">
+    <div class="brand">
+      <img src="{% static 'logo.png' %}" alt="FitTrack Logo" class="logo-img">
+      <h1>FitTrack</h1>
+    </div>
+
+    <nav class="flex items-center gap-4">
+      <div class="nav-links" id="navLinks">
+        <a href="{% url 'tracker:dashboard' %}">Dashboard</a>
+        <a href="{% url 'tracker:workout_list' %}">Workouts</a>
+        <a href="{% url 'tracker:meal_list' %}">Meals</a>
+        <a href="{% url 'tracker:weight_list' %}">Weight</a>
+      </div>
+
+      <button class="hamburger" id="hambButton" aria-expanded="false" aria-label="Toggle menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00ffc8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 6h18M3 12h18M3 18h18" />
+        </svg>
+      </button>
+    </nav>
+  </header>
+
+  <!-- -------- MAIN CONTENT -------- -->
+  <main class="container" role="main">
+    <div class="messages">
+      {% if messages %}
+        {% for message in messages %}
+          {% if message.tags == 'success' %}
+            <div class="msg success">{{ message }}</div>
+          {% elif message.tags == 'error' %}
+            <div class="msg error">{{ message }}</div>
+          {% else %}
+            <div class="msg info">{{ message }}</div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- -------- FOOTER -------- -->
+  <footer role="contentinfo">
+    <span class="foot-strong">&copy; 2025 FitTrack</span>
+    <p>Track your workouts, meals, and progress — built for consistency and style.</p>
+  </footer>
+
+  <script>
+    (function(){
+      const hamb = document.getElementById('hambButton');
+      const nav = document.getElementById('navLinks');
+      if (hamb && nav) {
+        hamb.addEventListener('click', () => {
+          const isOpen = nav.style.display === 'flex';
+          nav.style.display = isOpen ? 'none' : 'flex';
+          nav.style.flexDirection = 'column';
+          nav.style.alignItems = 'flex-end';
+          hamb.setAttribute('aria-expanded', !isOpen);
+        });
+        nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+          if (window.innerWidth < 900) nav.style.display = 'none';
+        }));
+      }
+    })();
+  </script>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

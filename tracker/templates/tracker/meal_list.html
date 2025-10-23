@@ -1,0 +1,189 @@
+{% extends 'tracker/base.html' %}
+{% block title %}Meals - Fitrack{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    background: linear-gradient(135deg, #0b132b, #1c2541);
+    color: #e0e0e0;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .page-header h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #00ffc8;
+  }
+
+  /* ✅ Add Meal Button */
+  .btn-add {
+    background: linear-gradient(90deg, #00ffc8, #00b4ff);
+    color: #000;
+    font-weight: 600;
+    padding: 0.7rem 1.4rem;
+    border-radius: 0.8rem;
+    border: none;
+    text-decoration: none;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 6px rgba(0, 255, 200, 0.4);
+  }
+
+  .btn-add:hover {
+    background: linear-gradient(90deg, #00b4ff, #00ffc8);
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(0, 255, 200, 0.6);
+  }
+
+  /* ✅ Card Container */
+  .card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+    overflow-x: auto;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 255, 200, 0.15);
+  }
+
+  /* ✅ Table Styles */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+  }
+
+  th, td {
+    padding: 0.8rem;
+    text-align: left;
+    font-size: 0.95rem;
+  }
+
+  th {
+    color: #00ffc8;
+    text-transform: uppercase;
+    font-weight: 500;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  tr {
+    transition: background 0.2s ease;
+  }
+
+  tr:hover {
+    background: rgba(0, 255, 200, 0.05);
+  }
+
+  td {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .text-blue-600 {
+    color: #00b4ff;
+    text-decoration: none;
+  }
+
+  .text-blue-600:hover {
+    text-decoration: underline;
+  }
+
+  .text-red-600 {
+    color: #ff5b5b;
+    text-decoration: none;
+  }
+
+  .text-red-600:hover {
+    text-decoration: underline;
+  }
+
+  .muted {
+    opacity: 0.7;
+  }
+
+  /* ✅ Responsive Table */
+  @media (max-width: 768px) {
+    table {
+      font-size: 0.85rem;
+    }
+    .page-header h2 {
+      font-size: 1.4rem;
+    }
+    .btn-add {
+      padding: 0.6rem 1.1rem;
+      font-size: 0.85rem;
+    }
+    th, td {
+      padding: 0.6rem;
+    }
+  }
+
+  /* ✅ Scrollbar Styling */
+  ::-webkit-scrollbar {
+    height: 8px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #00ffc8;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+  }
+</style>
+
+<div class="page-header">
+  <h2>Meals</h2>
+  <a href="{% url 'tracker:meal_add' %}" class="btn-add">ADD MEAL</a>
+</div>
+
+<div class="card table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Meal</th>
+        <th>Type</th>
+        <th>Date</th>
+        <th>Calories</th>
+        <th>Protein</th>
+        <th>Carbs</th>
+        <th>Fats</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for m in meals %}
+      <tr>
+        <td>{{ m.meal_name }}</td>
+        <td>{{ m.meal_type }}</td>
+        <td>{{ m.date }}</td>
+        <td>{{ m.calories }}</td>
+        <td>{{ m.protein }}</td>
+        <td>{{ m.carbs }}</td>
+        <td>{{ m.fats }}</td>
+        <td>
+          <a href="{% url 'tracker:meal_edit' m.pk %}" class="text-blue-600 small">Edit</a> |
+          <a href="{% url 'tracker:meal_delete' m.pk %}" class="text-red-600 small">Delete</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="8" class="py-4 muted">No meals logged yet.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
