@@ -1,0 +1,29 @@
+{% extends 'tracker/base.html' %}
+{% block title %}Sign in - FitTrack{% endblock %}
+
+{% block content %}
+<div class="form-wrapper">
+  <h2 style="color:var(--accent-teal);margin-bottom:0.8rem;">Sign in</h2>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="msg error">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <div style="margin-bottom:0.8rem;">
+      <label for="id_username">Username</label>
+      {{ form.username }}
+    </div>
+
+    <div style="margin-bottom:0.8rem;">
+      <label for="id_password">Password</label>
+      {{ form.password }}
+    </div>
+
+    <div style="display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1rem;">
+      <button type="submit" class="btn-primary">Sign in</button>
+      <a href="/" class="btn-outline">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
