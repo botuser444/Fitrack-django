@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,23 +20,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# Read sensitive settings from environment variables. For local development you
-# can export these in your environment or use a secrets manager. The fallback
-# SECRET_KEY below is only for local development and should NOT be used in
-# production.
-SECRET_KEY = os.getenv(
-    'DJANGO_SECRET_KEY',
-    'django-insecure-#l%1s9g8u_kv)29ncy8&4_t^k+t5g9lg_bheoy)e(z3!g9l&da'
-)
+SECRET_KEY = 'django-insecure-#l%1s9g8u_kv)29ncy8&4_t^k+t5g9lg_bheoy)e(z3!g9l&da'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# Control debug via DJANGO_DEBUG env var (set to 'True' for debugging).
-DEBUG = os.getenv('DJANGO_DEBUG', 'False').lower() in ('1', 'true', 'yes')
+# For local development we enable DEBUG. Change to False in production.
+DEBUG = False
 
-# ALLOWED_HOSTS should be a comma-separated string in PROD, e.g.
-# DJANGO_ALLOWED_HOSTS=example.com,www.example.com
-allowed = os.getenv('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost')
-ALLOWED_HOSTS = [h.strip() for h in allowed.split(',') if h.strip()]
+# Allow local hostnames for development; keep production hosts as well.
+ALLOWED_HOSTS = [
+    'projectsbyhamid.tech',
+    'www.projectsbyhamid.tech',
+    '164.92.199.192',
+    '127.0.0.1',
+    'localhost',
+    '::1',
+]
 
 
 # Application definition
@@ -54,10 +51,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    # WhiteNoise serves static files efficiently in production (optional,
-    # requires `whitenoise` package: `pip install whitenoise`). It must come
-    # directly after SecurityMiddleware.
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -136,12 +129,6 @@ STATICFILES_DIRS = [
     BASE_DIR / 'tracker' / 'static',
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # Needed for collectstatic
-# Use WhiteNoise's staticfiles storage backend in production for compressed
-# and cached static files. If you don't use WhiteNoise, you can remove this.
-STATICFILES_STORAGE = os.getenv(
-    'DJANGO_STATICFILES_STORAGE',
-    'whitenoise.storage.CompressedManifestStaticFilesStorage'
-)
 
 # Media files
 MEDIA_URL = '/media/'
@@ -152,26 +139,3 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# ------------------ Production security defaults ------------------
-# When DEBUG is False we enable stricter settings; override these via env
-# variables as needed.
-if not DEBUG:
-    # Ensure cookies are only sent over HTTPS
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-
-    # Prevent the browser from sending the referrer in cross-origin requests
-    SECURE_REFERRER_POLICY = 'same-origin'
-
-    # Redirect all HTTP requests to HTTPS (set to False if you terminate SSL
-    # at a proxy/load-balancer and handle forwarding differently)
-    SECURE_SSL_REDIRECT = os.getenv('DJANGO_SECURE_SSL_REDIRECT', 'True').lower() in ('1', 'true', 'yes')
-
-    # HTTP Strict Transport Security
-    SECURE_HSTS_SECONDS = int(os.getenv('DJANGO_SECURE_HSTS_SECONDS', '3600'))
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = os.getenv('DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS', 'True').lower() in ('1','true')
-    SECURE_HSTS_PRELOAD = os.getenv('DJANGO_SECURE_HSTS_PRELOAD', 'True').lower() in ('1','true')
-
-    # Don't expose server internals
-    DEBUG_PROPAGATE_EXCEPTIONS = False
