@@ -29,7 +29,6 @@ ALLOWED_HOSTS = [
     'projectsbyhamid.tech',
     'www.projectsbyhamid.tech',
     '164.92.199.192',
-    
 ]
 
 
@@ -124,8 +123,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'tracker' / 'static',
 ]
-# Added STATIC_ROOT for collectstatic to work
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # Needed for collectstatic
 
 # Media files
 MEDIA_URL = '/media/'
